@@ -1,0 +1,1939 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>v-donatik — пополнение Steam с комиссией 2%</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+
+/* ===== SMOOTH SCROLL ===== */
+html{
+  scroll-behavior:smooth;
+}
+
+/* ===== BASE ===== */
+body{
+  background:#05070f;
+  color:white;
+  overflow-x:hidden;
+  font-family:Arial, sans-serif;
+}
+
+/* ===== BACKGROUND ===== */
+.bg{
+  position:fixed;
+  inset:0;
+  z-index:-2;
+  overflow:hidden;
+}
+
+.blob{
+  position:absolute;
+  border-radius:50%;
+  filter:blur(140px);
+  opacity:0.55;
+}
+
+.blob1{
+  width:800px;
+  height:800px;
+  background:radial-gradient(circle at center, rgba(0,200,255,0.9), transparent 60%);
+  top:-200px;
+  left:-200px;
+}
+
+.blob2{
+  width:900px;
+  height:900px;
+  background:radial-gradient(circle at center, rgba(59,130,246,0.8), transparent 65%);
+  top:150px;
+  right:-350px;
+}
+
+.blob3{
+  width:700px;
+  height:700px;
+  background:radial-gradient(circle at center, rgba(14,165,233,0.7), transparent 60%);
+  bottom:-250px;
+  left:30%;
+}
+
+.noise{
+  position:fixed;
+  inset:0;
+  z-index:-1;
+  pointer-events:none;
+  background-image:url("https://www.transparenttextures.com/patterns/noise.png");
+  opacity:0.04;
+}
+
+/* ===== HEADER ===== */
+header{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  z-index:50;
+  padding:20px;
+  backdrop-filter:blur(20px);
+}
+
+/* ===== GLASS ===== */
+.glass{
+  background:rgba(255,255,255,0.05);
+  backdrop-filter:blur(14px);
+  border:1px solid rgba(255,255,255,0.08);
+  transition:.3s;
+}
+
+.glass:hover{
+  border-color:rgba(6,182,212,0.3);
+}
+
+/* ===== BUTTON ===== */
+.glow{
+  box-shadow:0 0 40px rgba(6,182,212,0.25);
+  transition:.3s;
+}
+
+.glow:hover{
+  transform:translateY(-2px);
+  box-shadow:0 0 60px rgba(6,182,212,0.45);
+}
+
+/* ===== SHAKE ===== */
+.shake{
+  animation:shake .4s ease;
+}
+
+@keyframes shake{
+  0%,100%{transform:translateX(0);}
+  25%{transform:translateX(-6px);}
+  50%{transform:translateX(6px);}
+  75%{transform:translateX(-4px);}
+}
+
+/* ===== FAQ ===== */
+details{
+  cursor:pointer;
+}
+
+summary{
+  list-style:none;
+}
+
+summary::-webkit-details-marker{
+  display:none;
+}
+
+/* ===== SELECT ===== */
+select{
+  appearance:none;
+  -webkit-appearance:none;
+  -moz-appearance:none;
+}
+
+/* LEGAL ACCORDION */
+.legal-box{
+  max-height:0;
+  overflow:hidden;
+  opacity:0;
+  transform:translateY(-10px);
+  transition:
+    max-height .5s ease,
+    opacity .4s ease,
+    transform .4s ease,
+    margin-top .4s ease;
+}
+
+.legal-box.open{
+  max-height:1000px;
+  opacity:1;
+  transform:translateY(0);
+  margin-top:15px;
+}
+
+.legal-content{
+  padding:20px;
+  border-radius:20px;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08);
+  color:rgba(255,255,255,.7);
+  line-height:1.8;
+}
+
+/* =======================================================
+   MOBILE / TABLET ADAPTIVE FIX
+======================================================= */
+
+*{
+  min-width:0;
+  box-sizing:border-box;
+}
+
+img{
+  max-width:100%;
+}
+
+html,
+body{
+  overflow-x:hidden;
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 768px){
+
+  /* BASE */
+  body{
+    font-size:14px;
+  }
+
+  section,
+  footer,
+  header{
+    width:100%;
+  }
+
+  /* HEADER */
+  header{
+    padding:12px;
+  }
+
+  header .max-w-6xl{
+    padding:16px;
+    gap:14px;
+    flex-direction:column;
+    align-items:center;
+  }
+
+  nav{
+    width:100%;
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:12px !important;
+    text-align:center;
+  }
+
+  nav a{
+    font-size:14px;
+  }
+
+  /* HERO */
+  #topup{
+    padding-top:180px !important;
+    padding-bottom:70px !important;
+    padding-left:16px;
+    padding-right:16px;
+  }
+
+  #topup h1{
+    font-size:52px !important;
+    line-height:1.05;
+    word-break:break-word;
+  }
+
+  #topup p{
+    font-size:18px !important;
+    line-height:1.5;
+  }
+
+  #topup .glass{
+    width:100%;
+    max-width:100%;
+    padding:14px 18px;
+    font-size:14px;
+    line-height:1.5;
+    flex-wrap:wrap;
+    justify-content:center;
+  }
+
+  /* FORM */
+  #form{
+    padding-left:16px !important;
+    padding-right:16px !important;
+  }
+
+  #form .glass{
+    padding:20px !important;
+  }
+
+  #form .flex.gap-3{
+    flex-direction:column;
+  }
+
+  input,
+  select,
+  button{
+    min-height:54px;
+    font-size:16px !important;
+  }
+
+  select{
+    width:100%;
+  }
+
+  #result{
+    font-size:30px !important;
+    flex-wrap:wrap;
+    line-height:1.3;
+  }
+
+  /* FAQ */
+  #faq{
+    padding-left:16px !important;
+    padding-right:16px !important;
+    margin-top:70px !important;
+  }
+
+  #faq h2{
+    font-size:34px !important;
+  }
+
+  summary{
+    gap:12px;
+    font-size:15px;
+    line-height:1.5;
+  }
+
+  /* FOOTER */
+  footer{
+    padding-left:16px !important;
+    padding-right:16px !important;
+  }
+
+  footer .glass{
+    padding:22px !important;
+  }
+
+  footer h3{
+    font-size:30px !important;
+  }
+
+  /* LEGAL LINKS */
+  footer .flex-wrap{
+    gap:12px !important;
+  }
+
+  footer button{
+    font-size:13px;
+  }
+
+  /* LEGAL MODAL */
+  #legalPage{
+    padding:0;
+  }
+
+  #legalPage .max-w-5xl{
+    padding:20px 16px !important;
+  }
+
+  #legalTitle{
+    font-size:32px !important;
+    line-height:1.15;
+  }
+
+  #legalContent{
+    font-size:15px !important;
+    line-height:1.8 !important;
+  }
+
+  #legalPage .glass{
+    padding:18px !important;
+  }
+
+  /* MODAL TOP */
+  #legalPage .flex.items-center.justify-between{
+    align-items:flex-start;
+    gap:14px;
+  }
+
+  /* BLOBS */
+  .blob{
+    filter:blur(90px);
+    opacity:.35;
+  }
+
+  .blob1,
+  .blob2,
+  .blob3{
+    width:420px;
+    height:420px;
+  }
+
+  .blob1{
+    top:-120px;
+    left:-180px;
+  }
+
+  .blob2{
+    right:-220px;
+    top:120px;
+  }
+
+  .blob3{
+    bottom:-180px;
+    left:-80px;
+  }
+
+  /* NOISE */
+  .noise{
+    opacity:.025;
+  }
+
+  /* UMNICO */
+  [data-umnico-logo="true"]{
+    right:14px !important;
+    bottom:14px !important;
+    transform:scale(.9);
+  }
+
+  [data-umnico-loader="true"]{
+    right:12px !important;
+    bottom:0 !important;
+  }
+
+}
+
+/* ===== SMALL PHONES ===== */
+@media (max-width: 480px){
+
+  #topup h1{
+    font-size:42px !important;
+  }
+
+  #topup p{
+    font-size:16px !important;
+  }
+
+  #result{
+    font-size:24px !important;
+  }
+
+  #faq h2,
+  footer h3{
+    font-size:28px !important;
+  }
+
+  #legalTitle{
+    font-size:26px !important;
+  }
+
+  nav{
+    gap:8px !important;
+  }
+
+  nav a{
+    width:100%;
+  }
+
+}
+
+/* ===== FIX HEADER MOBILE ===== */
+
+@media (max-width: 768px){
+
+  header{
+    padding:10px !important;
+  }
+
+  header .max-w-6xl{
+    flex-direction:row !important;
+    align-items:center !important;
+    justify-content:space-between !important;
+    padding:14px 16px !important;
+    border-radius:20px;
+    gap:10px !important;
+  }
+
+  /* LOGO */
+  header .text-2xl{
+    font-size:22px !important;
+    flex-shrink:0;
+  }
+
+  /* NAV */
+  nav{
+    width:auto !important;
+    display:flex !important;
+    flex-wrap:wrap;
+    justify-content:flex-end;
+    gap:8px !important;
+  }
+
+  nav a{
+    width:auto !important;
+    font-size:12px !important;
+    padding:8px 12px !important;
+    border-radius:12px;
+    white-space:nowrap;
+  }
+
+  /* SUPPORT BUTTON */
+  nav a:last-child{
+    padding:8px 14px !important;
+  }
+
+}
+
+/* ===== VERY SMALL PHONES ===== */
+
+@media (max-width: 420px){
+
+  header .max-w-6xl{
+    flex-direction:column !important;
+    align-items:center !important;
+    gap:12px !important;
+  }
+
+  nav{
+    justify-content:center !important;
+  }
+
+}
+
+/* ===================================================
+   FORCE SAME LAYOUT FROM 400PX+
+=================================================== */
+
+@media (min-width: 400px){
+
+  /* CONTAINER */
+  .max-w-6xl,
+  .max-w-5xl{
+    max-width:420px !important;
+    margin-left:auto !important;
+    margin-right:auto !important;
+  }
+
+  /* HEADER */
+  header{
+    padding:10px !important;
+  }
+
+  header .max-w-6xl{
+    flex-direction:column !important;
+    align-items:center !important;
+    justify-content:center !important;
+    gap:12px !important;
+    padding:16px !important;
+  }
+
+  nav{
+    width:100% !important;
+    display:flex !important;
+    justify-content:center !important;
+    flex-wrap:wrap !important;
+    gap:10px !important;
+  }
+
+  nav a{
+    font-size:13px !important;
+    padding:10px 14px !important;
+  }
+
+  /* HERO */
+  #topup{
+    padding-top:190px !important;
+    padding-bottom:70px !important;
+  }
+
+  #topup h1{
+    font-size:52px !important;
+    line-height:1.05 !important;
+  }
+
+  #topup p{
+    font-size:18px !important;
+  }
+
+  /* FORM */
+  #form .flex.gap-3{
+    flex-direction:column !important;
+  }
+
+  select{
+    width:100% !important;
+  }
+
+  #result{
+    font-size:30px !important;
+  }
+
+  /* FAQ */
+  #faq h2{
+    font-size:34px !important;
+  }
+
+  /* FOOTER */
+  footer h3{
+    font-size:30px !important;
+  }
+
+  /* LEGAL */
+  #legalTitle{
+    font-size:32px !important;
+  }
+
+}
+
+/* ======================================================
+   UNIVERSAL RESPONSIVE SYSTEM
+====================================================== */
+
+*{
+  box-sizing:border-box;
+  min-width:0;
+}
+
+html,
+body{
+  overflow-x:hidden;
+}
+
+img{
+  max-width:100%;
+}
+
+/* ======================================================
+   CONTAINERS
+====================================================== */
+
+.max-w-6xl{
+  width:100%;
+  max-width:1200px !important;
+  margin:auto;
+}
+
+.max-w-5xl{
+  width:100%;
+  max-width:1000px !important;
+  margin:auto;
+}
+
+/* ======================================================
+   HEADER
+====================================================== */
+
+header{
+  padding:14px;
+}
+
+header .max-w-6xl{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  padding:18px 24px !important;
+}
+
+nav{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  flex-wrap:wrap;
+}
+
+nav a{
+  white-space:nowrap;
+}
+
+/* ======================================================
+   HERO
+====================================================== */
+
+#topup{
+  padding-left:20px;
+  padding-right:20px;
+}
+
+#topup h1{
+  font-size:clamp(42px, 8vw, 110px);
+  line-height:1;
+}
+
+#topup p{
+  font-size:clamp(16px, 2vw, 28px);
+}
+
+#topup .glass{
+  max-width:100%;
+  flex-wrap:wrap;
+}
+
+/* ======================================================
+   FORM
+====================================================== */
+
+#form{
+  padding-left:20px !important;
+  padding-right:20px !important;
+}
+
+#form .glass{
+  padding:28px !important;
+}
+
+#form input,
+#form select,
+#form button{
+  min-height:56px;
+  font-size:16px;
+}
+
+#result{
+  font-size:clamp(26px, 4vw, 48px) !important;
+  flex-wrap:wrap;
+}
+
+/* ======================================================
+   FAQ
+====================================================== */
+
+#faq{
+  padding-left:20px !important;
+  padding-right:20px !important;
+}
+
+#faq h2{
+  font-size:clamp(32px, 5vw, 52px);
+}
+
+summary{
+  line-height:1.5;
+}
+
+/* ======================================================
+   FOOTER
+====================================================== */
+
+footer{
+  padding-left:20px !important;
+  padding-right:20px !important;
+}
+
+footer h3{
+  font-size:clamp(28px, 5vw, 42px);
+}
+
+/* ======================================================
+   LEGAL PAGE
+====================================================== */
+
+#legalPage .max-w-5xl{
+  padding:40px 20px !important;
+}
+
+#legalTitle{
+  font-size:clamp(28px, 5vw, 58px) !important;
+  line-height:1.1;
+}
+
+#legalContent{
+  line-height:1.8 !important;
+}
+
+/* ======================================================
+   BLOBS PERFORMANCE
+====================================================== */
+
+.blob{
+  will-change:transform;
+}
+
+/* ======================================================
+   TABLET
+====================================================== */
+
+@media (max-width: 1024px){
+
+  header .max-w-6xl{
+    flex-direction:column;
+    justify-content:center;
+  }
+
+  nav{
+    justify-content:center;
+  }
+
+  #topup{
+    padding-top:190px !important;
+  }
+
+  #form .flex.gap-3{
+    flex-direction:column;
+  }
+
+  select{
+    width:100%;
+  }
+
+}
+
+/* ======================================================
+   MOBILE
+====================================================== */
+
+@media (max-width: 768px){
+
+  body{
+    font-size:14px;
+  }
+
+  /* HEADER */
+  header{
+    padding:10px !important;
+  }
+
+  header .max-w-6xl{
+    padding:16px !important;
+    gap:14px;
+    border-radius:20px;
+  }
+
+  nav{
+    width:100%;
+    gap:10px !important;
+  }
+
+  nav a{
+    font-size:13px !important;
+    padding:10px 14px !important;
+  }
+
+  /* HERO */
+  #topup{
+    padding-top:180px !important;
+    padding-bottom:70px !important;
+  }
+
+  /* FORM */
+  #form .glass{
+    padding:20px !important;
+  }
+
+  #result{
+    line-height:1.2;
+  }
+
+  /* FAQ */
+  #faq{
+    margin-top:70px !important;
+  }
+
+  /* FOOTER */
+  footer .glass{
+    padding:22px !important;
+  }
+
+  /* LEGAL */
+  #legalPage .glass{
+    padding:20px !important;
+  }
+
+  /* BLOBS */
+  .blob{
+    filter:blur(90px);
+    opacity:.35;
+  }
+
+  .blob1,
+  .blob2,
+  .blob3{
+    width:420px;
+    height:420px;
+  }
+
+  /* UMNICO */
+  [data-umnico-logo="true"]{
+    right:14px !important;
+    bottom:14px !important;
+    transform:scale(.9);
+  }
+
+  [data-umnico-loader="true"]{
+    right:10px !important;
+    bottom:0 !important;
+  }
+
+}
+
+/* ======================================================
+   SMALL MOBILE
+====================================================== */
+
+@media (max-width: 420px){
+
+  nav{
+    justify-content:center !important;
+  }
+
+  nav a{
+    width:auto !important;
+  }
+
+  #topup h1{
+    font-size:44px !important;
+  }
+
+  #result{
+    font-size:24px !important;
+  }
+
+}
+</style>
+
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header>
+
+  <div class="max-w-6xl mx-auto glass rounded-2xl px-6 py-4 flex items-center justify-between">
+
+    <!-- LOGO -->
+    <div class="text-2xl font-black tracking-tight">
+      <span class="text-white">v</span><span class="text-cyan-400">-donatik</span>
+    </div>
+
+    <nav class="flex items-center gap-6 text-white/70 font-medium">
+
+  <a href="#topup"
+  class="hover:text-cyan-400 transition duration-300">
+    Пополнить Steam
+  </a>
+
+  <a href="#faq"
+  class="hover:text-cyan-400 transition duration-300">
+    FAQ
+  </a>
+
+  <a href="#contacts"
+  class="px-4 py-2 rounded-xl bg-cyan-400 text-black font-bold hover:bg-cyan-300 transition duration-300 glow">
+    Поддержка
+  </a>
+
+</nav>
+
+  </div>
+
+</header>
+
+<!-- BACKGROUND -->
+<div class="bg">
+  <div class="blob blob1"></div>
+  <div class="blob blob2"></div>
+  <div class="blob blob3"></div>
+</div>
+
+<div class="noise"></div>
+
+<!-- HERO -->
+<section id="topup" class="relative pt-40 pb-24 text-center">
+
+<h1 class="text-7xl font-black leading-tight">
+  <span class="text-white">v</span><span class="text-cyan-400">-donatik</span>
+</h1>
+
+<p class="text-2xl text-white/70 mt-6">
+  Быстрое и безопасное пополнение Steam
+</p>
+
+<div class="mt-6 inline-flex items-center gap-2 glass px-5 py-3 rounded-2xl text-cyan-300">
+  УСПЕЙ ПОПОЛНИТЬ! комиссия всего <b>2%</b> может закончиться в любой момент 🔥
+</div>
+
+</section>
+
+<!-- FORM -->
+<section id="form" class="max-w-5xl mx-auto px-6 space-y-6">
+
+<!-- AMOUNT -->
+<div class="glass p-7 rounded-3xl">
+
+<div class="text-white/60 mb-2">
+Сумма пополнения
+</div>
+
+<div class="flex gap-3">
+
+<input id="amount"
+type="number"
+class="w-full p-5 rounded-2xl bg-black/40 border border-white/10 outline-none"
+placeholder="Введите сумму"
+oninput="update()"/>
+
+<select id="region"
+class="bg-black/40 border border-white/10 rounded-2xl px-5 outline-none text-2xl"
+onchange="updateRegion()">
+
+<option value="RUB">🇷🇺</option>
+<option value="KZT">🇰🇿</option>
+<option value="USD">🇺🇸</option>
+<option value="EUR">🇪🇺</option>
+<option value="UAH">🇺🇦</option>
+
+</select>
+
+</div>
+
+<div id="limitText"
+class="text-white/40 text-sm mt-2">
+</div>
+
+</div>
+
+<!-- LOGIN -->
+<div class="glass p-7 rounded-3xl">
+
+<div class="text-white/60 mb-2">
+Steam логин
+</div>
+
+<input id="login"
+class="w-full p-5 rounded-2xl bg-black/40 border border-white/10 outline-none"
+placeholder="Введите логин"
+oninput="checkLogin()"/>
+
+<div id="status"
+class="text-sm mt-2 text-cyan-400/70">
+</div>
+
+</div>
+
+<!-- RESULT -->
+<div class="glass p-7 rounded-3xl">
+
+<div class="text-white/50">
+К оплате
+</div>
+
+<div id="result"
+class="text-4xl font-black text-cyan-400 flex items-center gap-3">
+
+<span id="resultFlag">🇷🇺</span>
+<span id="resultValue">0</span>
+
+</div>
+
+</div>
+
+<!-- PAY -->
+<button onclick="pay()"
+class="w-full py-5 rounded-3xl bg-cyan-500 text-black font-black glow">
+
+Перейти к оплате
+
+</button>
+
+</section>
+
+<!-- FAQ -->
+<section id="faq"
+class="max-w-5xl mx-auto px-6 mt-20 mb-24">
+
+<h2 class="text-4xl font-black text-center mb-10">
+FAQ
+</h2>
+
+<div class="space-y-4">
+
+<div class="glass p-5 rounded-2xl">
+
+<details class="group">
+
+<summary class="flex items-center justify-between cursor-pointer text-cyan-300 font-semibold list-none">
+
+Как быстро приходит пополнение?
+
+<span class="transition-transform duration-300 group-open:rotate-180 text-cyan-300">
+
+<svg xmlns="http://www.w3.org/2000/svg"
+class="w-5 h-5"
+fill="none"
+viewBox="0 0 24 24"
+stroke="currentColor">
+
+<path stroke-linecap="round"
+stroke-linejoin="round"
+stroke-width="2"
+d="M19 9l-7 7-7-7" />
+
+</svg>
+
+</span>
+
+</summary>
+
+<p class="text-white/60 mt-3">
+Обычно от 1 до 5 минут после оплаты, но иногда из-за нагрузки пополнение может доходить до двух часов.
+</p>
+
+</details>
+
+</div>
+
+<div class="glass p-5 rounded-2xl">
+
+<details class="group">
+
+<summary class="flex items-center justify-between cursor-pointer text-cyan-300 font-semibold list-none">
+
+Есть ли комиссия?
+
+<span class="transition-transform duration-300 group-open:rotate-180 text-cyan-300">
+
+<svg xmlns="http://www.w3.org/2000/svg"
+class="w-5 h-5"
+fill="none"
+viewBox="0 0 24 24"
+stroke="currentColor">
+
+<path stroke-linecap="round"
+stroke-linejoin="round"
+stroke-width="2"
+d="M19 9l-7 7-7-7" />
+
+</svg>
+
+</span>
+
+</summary>
+
+<p class="text-white/60 mt-3">
+Да, комиссия составляет всего 2%.
+</p>
+
+</details>
+
+</div>
+
+<div class="glass p-5 rounded-2xl">
+
+<details class="group">
+
+<summary class="flex items-center justify-between cursor-pointer text-cyan-300 font-semibold list-none">
+
+Нужно ли вводить пароль Steam?
+
+<span class="transition-transform duration-300 group-open:rotate-180 text-cyan-300">
+
+<svg xmlns="http://www.w3.org/2000/svg"
+class="w-5 h-5"
+fill="none"
+viewBox="0 0 24 24"
+stroke="currentColor">
+
+<path stroke-linecap="round"
+stroke-linejoin="round"
+stroke-width="2"
+d="M19 9l-7 7-7-7" />
+
+</svg>
+
+</span>
+
+</summary>
+
+<p class="text-white/60 mt-3">
+Нет, нужен только логин аккаунта.
+</p>
+
+</details>
+
+</div>
+
+<div class="glass p-5 rounded-2xl">
+
+<details class="group">
+
+<summary class="flex items-center justify-between cursor-pointer text-cyan-300 font-semibold list-none">
+
+Гайд при первом пополнении нового аккаунта Steam.
+
+<span class="transition-transform duration-300 group-open:rotate-180 text-cyan-300">
+
+<svg xmlns="http://www.w3.org/2000/svg"
+class="w-5 h-5"
+fill="none"
+viewBox="0 0 24 24"
+stroke="currentColor">
+
+<path stroke-linecap="round"
+stroke-linejoin="round"
+stroke-width="2"
+d="M19 9l-7 7-7-7" />
+
+</svg>
+
+</span>
+
+</summary>
+
+<p class="text-white/60 mt-3">
+Если вы пополняете аккаунт на котором до этого не было финансовых операций, его регион может измениться на Казахстан, Узбекистан или другой похожий регион, а валюта на CIS $ (или другие).
+
+Чтобы этого избежать и сделать тот регион (страну) которую вы хотите, первое пополение должно быть из той страны или региона которое вы хотите себе, если вы хотите оставить Россию, пополняйте на Steam кошелёк рубли, если хотите регион Казахстан пополняйте на Steam кошелёк теньге, так же и с другими.
+</p>
+
+</details>
+
+</div>
+
+<div class="glass p-5 rounded-2xl">
+
+<details class="group">
+
+<summary class="flex items-center justify-between cursor-pointer text-cyan-300 font-semibold list-none">
+
+Не приходят деньги на баланс аккаунта Steam
+
+<span class="transition-transform duration-300 group-open:rotate-180 text-cyan-300">
+
+<svg xmlns="http://www.w3.org/2000/svg"
+class="w-5 h-5"
+fill="none"
+viewBox="0 0 24 24"
+stroke="currentColor">
+
+<path stroke-linecap="round"
+stroke-linejoin="round"
+stroke-width="2"
+d="M19 9l-7 7-7-7" />
+
+</svg>
+
+</span>
+
+</summary>
+
+<p class="text-white/60 mt-3">
+Если Вы указали верно ЛОГИН (это не никнейм) и баланс Вашего аккаунта - рубли (₽), пополнение происходит моментально.
+Если Вам не поступили средства на баланс в течении 10 минут, пожалуйста обратитесь в Техническую поддержку.
+</p>
+
+</details>
+
+</div>
+
+<div class="glass p-5 rounded-2xl">
+
+<details class="group">
+
+<summary class="flex items-center justify-between cursor-pointer text-cyan-300 font-semibold list-none">
+
+Что такое "Логин"?
+
+<span class="transition-transform duration-300 group-open:rotate-180 text-cyan-300">
+
+<svg xmlns="http://www.w3.org/2000/svg"
+class="w-5 h-5"
+fill="none"
+viewBox="0 0 24 24"
+stroke="currentColor">
+
+<path stroke-linecap="round"
+stroke-linejoin="round"
+stroke-width="2"
+d="M19 9l-7 7-7-7" />
+
+</svg>
+
+</span>
+
+</summary>
+
+<p class="text-white/60 mt-3">
+Логин — это то что вы вводите при авторизации, у каждого пользователя он уникальный, а никнейм вы можете менять по своему усмотрению. Людей с ником QWERTY, может быть сотни. Не перепутайте ваш логин и никнейм.
+</p>
+
+</details>
+
+</div>
+
+<div class="glass p-5 rounded-2xl">
+
+<details class="group">
+
+<summary class="flex items-center justify-between cursor-pointer text-cyan-300 font-semibold list-none">
+
+Это безопасно?
+
+<span class="transition-transform duration-300 group-open:rotate-180 text-cyan-300">
+
+<svg xmlns="http://www.w3.org/2000/svg"
+class="w-5 h-5"
+fill="none"
+viewBox="0 0 24 24"
+stroke="currentColor">
+
+<path stroke-linecap="round"
+stroke-linejoin="round"
+stroke-width="2"
+d="M19 9l-7 7-7-7" />
+
+</svg>
+
+</span>
+
+</summary>
+
+<p class="text-white/60 mt-3">
+Да, оплата проходит через защищённый платёжный сервис.
+</p>
+
+</details>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- CONTACTS -->
+<footer id="contacts" class="max-w-5xl mx-auto px-6 mb-16">
+
+  <div class="glass rounded-3xl p-8 text-center">
+
+    <h3 class="text-3xl font-black mb-6 text-cyan-400">
+      Поддержка
+    </h3>
+
+    <div class="space-y-5 text-lg">
+
+      <!-- TELEGRAM -->
+      <div>
+
+        <div class="text-white/50 mb-1">
+          Telegram
+        </div>
+
+        <a href="https://t.me/vdonatilkhelp_bot"
+class="text-cyan-400 hover:text-cyan-300 transition underline">
+
+          @vdonatilkhelp_bot
+
+        </a>
+
+      </div>
+
+      <!-- EMAIL -->
+      <div>
+
+        <div class="text-white/50 mb-1">
+          почта
+        </div>
+
+        <a href="mailto:support@v-donatik.ru"
+        class="text-cyan-400 hover:text-cyan-300 transition underline">
+
+          support@v-donatik.ru
+
+        </a>
+
+      </div>
+
+      <!-- WEBSITE -->
+      <div>
+
+        <div class="text-white/50 mb-1">
+          Официальный сайт
+        </div>
+
+        <a href="https://v-donatik.ru"
+        target="_blank"
+        class="text-cyan-400 hover:text-cyan-300 transition underline">
+
+          v-donatik.ru
+
+        </a>
+
+      </div>
+
+    </div>
+
+    <div class="mt-8 text-white/30 text-sm">
+      © 2026 v-donatik — Все права защищены
+    </div>
+
+  </div>
+
+<!-- LEGAL -->
+<div class="mt-10 pt-8 border-t border-white/10">
+
+  <div class="flex flex-wrap justify-center gap-6 text-sm text-white/40">
+
+    <button onclick="openLegalPage('Политика конфиденциальности', privacyText)"
+    class="hover:text-cyan-400 transition underline">
+      Политика конфиденциальности
+    </button>
+
+    <button onclick="openLegalPage('Обработка персональных данных', dataText)"
+    class="hover:text-cyan-400 transition underline">
+      Обработка персональных данных
+    </button>
+
+    <button onclick="openLegalPage('Пользовательское соглашение', agreementText)"
+    class="hover:text-cyan-400 transition underline">
+      Пользовательское соглашение
+    </button>
+
+    <button onclick="openLegalPage('Правила возврата средств', refundText)"
+    class="hover:text-cyan-400 transition underline">
+      Правила возврата средств
+    </button>
+
+    <button onclick="openLegalPage('Публичная оферта', offerText)"
+    class="hover:text-cyan-400 transition underline">
+      Публичная оферта
+    </button>
+
+  </div>
+
+</div>
+
+<!-- FULLSCREEN LEGAL -->
+<div id="legalPage"
+class="fixed inset-0 z-[9999] bg-[#05070f] overflow-y-auto translate-y-full opacity-0 transition-all duration-500">
+
+  <!-- BG -->
+  <div class="absolute inset-0 overflow-hidden pointer-events-none">
+
+    <div class="blob blob1"></div>
+    <div class="blob blob2"></div>
+    <div class="blob blob3"></div>
+
+  </div>
+
+  <div class="relative max-w-5xl mx-auto px-6 py-20">
+
+    <!-- TOP -->
+    <div class="flex items-center justify-between mb-10">
+
+      <h2 id="legalTitle"
+      class="text-5xl font-black text-cyan-400">
+      </h2>
+
+      <button onclick="closeLegalPage()"
+      class="text-white/50 hover:text-white text-5xl leading-none transition">
+        ×
+      </button>
+
+    </div>
+
+    <!-- CONTENT -->
+    <div class="glass rounded-3xl p-8">
+
+      <div id="legalContent"
+      class="text-white/70 leading-8 text-lg space-y-6">
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+</footer>
+
+<script>
+
+let rate = {
+  RUB:1,
+  KZT:5.2,
+  USD:90,
+  EUR:95,
+  UAH:2.3
+};
+
+let symbol = {
+  RUB:"₽",
+  KZT:"₸",
+  USD:"$",
+  EUR:"€",
+  UAH:"₴"
+};
+
+let limits = {
+  RUB:[30,50000],
+  KZT:[150,250000],
+  USD:[1,700],
+  EUR:[1,650],
+  UAH:[30,20000]
+};
+
+const flags = {
+  RUB:"🇷🇺",
+  KZT:"🇰🇿",
+  USD:"🇺🇸",
+  EUR:"🇪🇺",
+  UAH:"🇺🇦"
+};
+
+function update(){
+
+  let amount =
+    parseFloat(document.getElementById("amount").value) || 0;
+
+  let region =
+    document.getElementById("region").value;
+
+  let [min,max] = limits[region];
+
+  if(amount > 0 && amount < min){
+
+    document.getElementById("limitText").innerText =
+      `Минимум ${min} ${symbol[region]}`;
+
+  }
+  else if(amount > max){
+
+    document.getElementById("limitText").innerText =
+      `Максимум ${max} ${symbol[region]}`;
+
+  }
+  else{
+
+    document.getElementById("limitText").innerText =
+      `Мин ${min} / Макс ${max} ${symbol[region]}`;
+
+  }
+
+  // Сумма к оплате (+2%)
+  let result = amount * 1.02;
+
+  document.getElementById("resultFlag").innerText =
+    flags[region];
+
+  document.getElementById("resultValue").innerText =
+    result.toFixed(2) + " " + symbol[region];
+}
+
+function updateRegion(){
+  update();
+}
+
+function checkLogin(){
+
+  let status =
+    document.getElementById("status");
+
+  let val =
+    document.getElementById("login").value;
+
+  status.innerText = val
+    ? "К сожалению пока что мы не можем автоматически проверить логин — убедитесь в правильности."
+    : "";
+}
+
+function pay(){
+
+  let login =
+    document.getElementById("login").value;
+
+  let amount =
+    parseFloat(document.getElementById("amount").value);
+
+  let region =
+    document.getElementById("region").value;
+
+  let [min,max] = limits[region];
+
+  if(!login || !amount || amount < min || amount > max){
+
+    document.getElementById("form")
+      .classList.add("shake");
+
+    setTimeout(() => {
+      document.getElementById("form")
+        .classList.remove("shake");
+    }, 400);
+
+    alert("Проверьте логин и сумму");
+
+    return;
+  }
+
+  // К оплате +2%
+  let finalAmount = (amount * 1.02).toFixed(2);
+
+  // Ссылка оплаты
+  let paymentUrl =
+  `https://bot-t.com/payment/gets?link=https://yoomoney.ru/quickpay/confirm.xml&params%5Breceiver%5D=4100119323802485&params%5Bformcomment%5D=SteamTopUp&params%5Blabel%5D=${encodeURIComponent(login)}&params%5Bquickpay-form%5D=shop&params%5Btargets%5D=${encodeURIComponent("Steam пополнение " + login)}&params%5Bsum%5D=${finalAmount}&params%5Bneed-fio%5D=0&params%5Bneed-phone%5D=0&params%5Bneed-email%5D=0&params%5Bneed-address%5D=0&params%5BpaymentType%5D=PC&params%5BsuccessURL%5D=https%3A%2F%2Fbot-t.com%2Flink%2Fctraxdetsva_bot`;
+
+  // Переход на оплату
+  window.location.href = paymentUrl;
+}
+
+update();
+
+</script>
+
+
+            
+        <a
+            href="https://umnico.com/?utm_source=widget&amp;utm_medium=online_chat&amp;utm_campaign=button"
+            target="_blank"
+            draggable="false"
+            data-umnico-logo="true"
+            style="position:fixed !important;right:38px !important;bottom:25px !important;z-index:2147483646 !important;display:flex !important;align-items:center !important;justify-content:center !important;padding-top:1px !important;padding-bottom:2px !important;background-color:rgba(227, 237, 243, 0.4) !important;border-radius:41px !important;cursor:pointer !important"
+        >
+            <img
+                draggable="false"
+                src="https://umnico.com/assets/index/umnico1.svg"
+                alt="Umnico logo"
+                style="width:45px !important;height:9px !important"
+            />
+       </a>
+    
+            <div data-umnico-loader="true" style="all: initial;position:fixed !important;right:37px !important;bottom:9px !important;z-index:2147483646 !important;font-family:sans-serif !important;font-size:10px !important;line-height:1 !important;font-weight:bold !important;padding:2px 4px 1px !important;background-color:rgba(227, 237, 243, 0.4) !important;border-radius:41px !important">Loading</div>
+            <script type="text/javascript">
+                document.umnicoWidgetHash = 'd757eb23630b3bcf5007d27ec20c0e8e';
+                var x = document.createElement('script');
+                x.src = 'https://umnico.com/assets/widget-loader.js';
+                x.type = 'text/javascript';
+                x.charset = 'UTF-8';
+                x.async = true;
+                document.body.appendChild(x);
+            </script>
+        
+<script>
+
+/* ТЕКСТЫ */
+
+const privacyText = `
+<p>
+<h3 class="text-2xl font-bold text-cyan-400">
+1. Общие положения
+</h3>
+
+<p>
+Настоящая Политика конфиденциальности регулирует порядок обработки и хранения данных пользователей сайта v-donatik.ru.
+</p>
+
+<p>
+Используя сайт, пользователь автоматически соглашается с условиями данной политики.
+</p>
+
+<h3 class="text-2xl font-bold text-cyan-400">
+2. Какие данные собираются
+</h3>
+
+<p>
+Сервис может обрабатывать следующие данные:
+</p>
+
+<p>
+— Steam логин пользователя;<br>
+— сумма пополнения;<br>
+— выбранная валюта платежа;<br>
+— IP-адрес;<br>
+— cookies;<br>
+— технические данные браузера и устройства.
+</p>
+
+<h3 class="text-2xl font-bold text-cyan-400">
+3. Цели обработки данных
+</h3>
+
+<p>
+Данные используются исключительно для:
+</p>
+
+<p>
+— выполнения пополнения Steam;<br>
+— обработки платежей;<br>
+— связи с пользователем;<br>
+— предотвращения мошеннических операций;<br>
+— улучшения качества работы сервиса.
+</p>
+
+<h3 class="text-2xl font-bold text-cyan-400">
+4. Передача данных
+</h3>
+
+<p>
+Оплата услуг осуществляется через сторонние платёжные системы. Пользователь соглашается с передачей необходимых данных платёжным операторам для выполнения транзакций.
+</p>
+
+<h3 class="text-2xl font-bold text-cyan-400">
+5. Защита данных
+</h3>
+
+<p>
+Администрация сайта принимает разумные технические и организационные меры для защиты пользовательских данных от несанкционированного доступа.
+</p>
+
+<h3 class="text-2xl font-bold text-cyan-400">
+6. Контакты
+</h3>
+
+<p>
+Telegram: @vdonatilkhelp_bot<br>
+Email: support@v-donatik.ru
+</p>
+</p>
+`;
+// #privacy
+
+const dataText = `
+<p>
+<h3 class="text-2xl font-bold text-cyan-400">
+1. Согласие пользователя
+</h3>
+
+<p>
+Пользователь, используя сайт v-donatik.ru, даёт согласие на обработку своих персональных данных.
+</p>
+
+<h3 class="text-2xl font-bold text-cyan-400">
+2. Какие данные обрабатываются
+</h3>
+
+<p>
+Обрабатываются:
+</p>
+
+<p>
+— Steam логин;<br>
+— информация о платеже;<br>
+— технические данные подключения;<br>
+— cookies.
+</p>
+
+<h3 class="text-2xl font-bold text-cyan-400">
+3. Действия с данными
+</h3>
+
+<p>
+Сервис может осуществлять:
+</p>
+
+<p>
+— сбор;<br>
+— хранение;<br>
+— использование;<br>
+— удаление;<br>
+— передачу платёжным системам.
+</p>
+
+<h3 class="text-2xl font-bold text-cyan-400">
+4. Срок хранения
+</h3>
+
+<p>
+Данные хранятся только в течение времени, необходимого для выполнения услуг и соблюдения требований законодательства.
+</p>
+
+<h3 class="text-2xl font-bold text-cyan-400">
+5. Защита информации
+</h3>
+
+<p>
+Администрация сайта принимает меры по защите персональных данных пользователей от утечки и неправомерного использования.
+</p>
+</p>
+`;
+// #data
+
+const agreementText = `
+<p>
+<h3 class="text-2xl font-bold text-cyan-400">
+1. Общие условия
+</h3>
+
+<p>
+Используя сервис v-donatik.ru, пользователь подтверждает согласие с условиями настоящего соглашения.
+</p>
+
+<h3 class="text-2xl font-bold text-cyan-400">
+2. Предмет соглашения
+</h3>
+
+<p>
+Сервис предоставляет услуги по пополнению баланса Steam аккаунтов.
+</p>
+
+<h3 class="text-2xl font-bold text-cyan-400">
+3. Обязанности пользователя
+</h3>
+
+<p>
+Пользователь обязуется:
+</p>
+
+<p>
+— указывать корректный Steam логин;<br>
+— внимательно проверять введённые данные;<br>
+— не использовать сервис в мошеннических целях.
+</p>
+
+<h3 class="text-2xl font-bold text-cyan-400">
+4. Ограничение ответственности
+</h3>
+
+<p>
+Сервис не несёт ответственности за:
+</p>
+
+<p>
+— ошибки пользователя при вводе логина;<br>
+— неверно выбранный регион аккаунта;<br>
+— задержки со стороны Steam или платёжных систем.
+</p>
+
+<h3 class="text-2xl font-bold text-cyan-400">
+5. Изменение условий
+</h3>
+
+<p>
+Администрация сайта вправе изменять условия соглашения без предварительного уведомления пользователей.
+</p>
+</p>
+`;
+// #agreement
+
+const refundText = `
+<p>
+<h3 class="text-2xl font-bold text-cyan-400">
+1. Общие положения
+</h3>
+
+<p>
+Возврат средств осуществляется в индивидуальном порядке после проверки обращения пользователя.
+</p>
+
+<h3 class="text-2xl font-bold text-cyan-400">
+2. Возврат возможен если
+</h3>
+
+<p>
+— произошла техническая ошибка сервиса;<br>
+— платёж был списан, но услуга не оказана;<br>
+— произошёл дублирующий платёж.
+</p>
+
+<h3 class="text-2xl font-bold text-cyan-400">
+3. Возврат невозможен если
+</h3>
+
+<p>
+— пользователь указал неверный Steam логин;<br>
+— средства были успешно зачислены;<br>
+— пользователь ошибся при выборе региона или валюты.
+</p>
+
+<h3 class="text-2xl font-bold text-cyan-400">
+4. Срок рассмотрения
+</h3>
+
+<p>
+Обращения рассматриваются в течение 1–7 рабочих дней.
+</p>
+
+<h3 class="text-2xl font-bold text-cyan-400">
+5. Контакты поддержки
+</h3>
+
+<p>
+Telegram: @vdonatilkhelp_bot<br>
+Email: support@v-donatik.ru
+</p>
+</p>
+`;
+// #refund
+
+const offerText = `
+<p>
+<h3 class="text-2xl font-bold text-cyan-400">
+1. Общие положения
+</h3>
+
+<p>
+Настоящий документ является публичной офертой сервиса v-donatik.ru на оказание услуг пополнения Steam.
+</p>
+
+<h3 class="text-2xl font-bold text-cyan-400">
+2. Акцепт оферты
+</h3>
+
+<p>
+Оплата услуги пользователем означает полное и безоговорочное принятие условий настоящей оферты.
+</p>
+
+<h3 class="text-2xl font-bold text-cyan-400">
+3. Предмет оферты
+</h3>
+
+<p>
+Сервис обязуется оказать услугу по пополнению Steam аккаунта пользователя после подтверждения оплаты.
+</p>
+
+<h3 class="text-2xl font-bold text-cyan-400">
+4. Стоимость услуг
+</h3>
+
+<p>
+Стоимость услуги отображается на сайте и включает комиссию сервиса.
+</p>
+
+<h3 class="text-2xl font-bold text-cyan-400">
+5. Ответственность сторон
+</h3>
+
+<p>
+Пользователь обязуется предоставлять достоверные данные. Сервис обязуется оказать услугу в разумные сроки.
+</p>
+
+<h3 class="text-2xl font-bold text-cyan-400">
+6. Контакты
+</h3>
+
+<p>
+Сайт: v-donatik.ru<br>
+Telegram: @vdonatilkhelp_bot<br>
+Email: support@v-donatik.ru
+</p>
+</p>
+`;
+// #offer
+
+/* OPEN */
+
+function openLegalPage(title, content){
+
+  const page =
+    document.getElementById("legalPage");
+
+  document.getElementById("legalTitle").innerText =
+    title;
+
+  document.getElementById("legalContent").innerHTML =
+    content;
+
+  page.classList.remove("translate-y-full");
+  page.classList.remove("opacity-0");
+
+  document.body.style.overflow = "hidden";
+}
+
+/* CLOSE */
+
+function closeLegalPage(){
+
+  const page =
+    document.getElementById("legalPage");
+
+  page.classList.add("translate-y-full");
+  page.classList.add("opacity-0");
+
+  document.body.style.overflow = "";
+}
+
+</script>
+
+</body>
+</html>
